@@ -19,12 +19,14 @@ COLS_TO_AGGREGATE = ['planned_trains', 'canceled_trains', 'delayed_trains']
 ts_df = filtered_dataset.groupby(by = 'date', as_index=False)[COLS_TO_AGGREGATE].sum()
 all_periods_df = filtered_dataset[COLS_TO_AGGREGATE].sum()
 
-ts_df['delayed_percentage'] = ts_df['delayed_trains'] / ts_df['planned_trains']
+ts_df['delayed_percentage'] = ts_df['delayed_trains'] / ts_df['planned_trains'] * 100
 all_periods_df['delayed_percentage'] = all_periods_df['delayed_trains'] / all_periods_df['planned_trains']
 
+ts_df['canceled_percentage'] = ts_df['canceled_trains'] / ts_df['planned_trains'] * 100
+all_periods_df['canceled_percentage'] = all_periods_df['canceled_trains'] / all_periods_df['planned_trains']
 
 st.metric('Taux de retard', "{:.1%}".format(all_periods_df.delayed_percentage) , label_visibility="visible")
-
-plot_ts(planned_trains_df, y='planned_trains')
+st.metric("Taux d'annulation", "{:.1%}".format(all_periods_df.canceled_percentage) , label_visibility="visible")
 
 st.line_chart(ts_df, x="date", y=COLS_TO_AGGREGATE)
+st.line_chart(ts_df, x="date", y=['delayed_percentage', 'canceled_percentage'])
