@@ -40,12 +40,17 @@ def filter_dataset(data:pd.DataFrame, inbound:Optional[str], outbound:Optional[s
 
 
 def aggregate_dataset_ts(data:pd.DataFrame, y: str):
-    data_agg = data.groupby(by = 'date')[y].sum()
+    data_agg = data.groupby(by = 'date', as_index=False)[y].sum()
     
     return(data_agg)
 
 
 
 def plot_ts(data_agg:pd.DataFrame, y:str):
-    st.line_chart(data_agg, x = 'date', y)
+    st.line_chart(data_agg, x = 'date', y=y)
+
+def get_outbounds(df):
+    return df.outbound.unique()
+
+
 
